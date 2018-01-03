@@ -55,8 +55,7 @@ public class ListViewAdapter extends BaseAdapter {
         txtNewsTitle.setText(newsLit[position].getTitle());
         Picasso.with(context)
                 .load(newsLit[position].getUrlToImage())
-                .resize(70,70)
-                .centerCrop()
+                .fit()
                 .into(imgNewsImage);
 
 
