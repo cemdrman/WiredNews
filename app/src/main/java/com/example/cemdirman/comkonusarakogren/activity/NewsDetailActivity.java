@@ -8,6 +8,7 @@ import android.widget.ImageView;
 
 import com.example.cemdirman.comkonusarakogren.R;
 import com.example.cemdirman.comkonusarakogren.model.News;
+import com.example.cemdirman.comkonusarakogren.utility.RequestURL;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -29,6 +30,7 @@ public class NewsDetailActivity extends Activity {
     private TextView  txtNewsDetailAuthor;
     private TextView  txtNewsDetailPublishedAt;
     private TextView  txtNewsDetailTitle;
+    private String[][] translatedWordList = new String[5][];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,9 +91,7 @@ public class NewsDetailActivity extends Activity {
         }
 
         String[] sortedWordList = sortWordNumber(counterMap);
-        for (String s : sortedWordList) {
-            System.out.println(s);
-        }
+        translatedWordList = translate(sortedWordList);
 
     }
 
@@ -118,12 +118,17 @@ public class NewsDetailActivity extends Activity {
                 counter++;
             }
         }
+
         return sortedWords;
     }
 
-    private void translate(){
-
-
+    private String[][] translate(String[] words){
+        String[][] translatedWords = new String[5][];
+        for (int i = 0; i < words.length; i++) {
+            translatedWords[i][0] = words[i];
+            translatedWords[i][1] = RequestURL.getTranslatinonUrl(words[i]);
+        }
+        return translatedWords;
     }
 
     private String dateFormater(String date){

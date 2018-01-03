@@ -22,8 +22,8 @@ public class RequestURL {
         return  newsUrl;
     }
 
-    public static String getTranslateUrl(){
-        String translateUrl  = yandexBaseUrl.concat(yandexApiKey);
+    public static String getTranslatinonUrl(String word){
+        String translateUrl  = yandexBaseUrl.concat(yandexApiKey).concat("&text="+word+"&lang=tr");
         Log.d(TAG,"getTranslateUrl: " + translateUrl );
         return translateUrl;
     }
