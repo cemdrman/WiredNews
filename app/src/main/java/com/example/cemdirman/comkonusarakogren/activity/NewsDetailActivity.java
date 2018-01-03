@@ -54,7 +54,7 @@ public class NewsDetailActivity extends Activity {
     private void setNewsDetail(News detailNews){
         txtNewsDetailDescription.setText(detailNews.getDescription());
         txtNewsDetailAuthor.setText("Author: " + detailNews.getAuthor());
-        txtNewsDetailPublishedAt.setText("Date: " + detailNews.getPublishedAt());
+        txtNewsDetailPublishedAt.setText("Date: " + dateFormater(detailNews.getPublishedAt()));
         txtNewsDetailTitle.setText(detailNews.getTitle());
 
         Picasso.with(getApplicationContext())
@@ -121,10 +121,13 @@ public class NewsDetailActivity extends Activity {
         return sortedWords;
     }
 
-
     private void translate(){
 
 
+    }
+
+    private String dateFormater(String date){
+        return String.valueOf(date.split("T")[0]);
     }
 
 
