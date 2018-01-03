@@ -49,4 +49,21 @@ public class JsonParse {
         return newsList;
     }
 
+    public String translatedWordParser(String wordJson){
+        String translatedWord = null;
+
+        try {
+            JSONObject jsonObject = new JSONObject(wordJson);
+            translatedWord = jsonObject.getString("text");
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return translatedWord;
+    }
+
+
+
+
+
 }

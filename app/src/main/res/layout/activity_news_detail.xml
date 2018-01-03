@@ -51,6 +51,14 @@
                 android:gravity="top"
                 style="@style/customTextView"/>
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/txtTranslatedWords"
+                android:maxLines="5"
+                android:lines="5"
+                style="@style/customTextView"/>
+
         </LinearLayout>
 
     </LinearLayout>

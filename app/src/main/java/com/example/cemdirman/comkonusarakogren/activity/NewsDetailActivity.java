@@ -1,13 +1,23 @@
 package com.example.cemdirman.comkonusarakogren.activity;
 
 import android.content.Intent;
+import android.util.Log;
 import android.widget.TextView;
 import android.app.Activity;
 import android.os.Bundle;
 import android.widget.ImageView;
+import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.cemdirman.comkonusarakogren.R;
+import com.example.cemdirman.comkonusarakogren.adapters.ListViewAdapter;
 import com.example.cemdirman.comkonusarakogren.model.News;
+import com.example.cemdirman.comkonusarakogren.utility.JsonParse;
 import com.example.cemdirman.comkonusarakogren.utility.RequestURL;
 import com.squareup.picasso.Picasso;
 
@@ -30,6 +40,9 @@ public class NewsDetailActivity extends Activity {
     private TextView  txtNewsDetailAuthor;
     private TextView  txtNewsDetailPublishedAt;
     private TextView  txtNewsDetailTitle;
+    private TextView  txtTranslatedWords;
+    private JsonParse  jsonParse = new JsonParse();
+
     private String[][] translatedWordList = new String[5][];
 
     @Override
@@ -47,10 +60,11 @@ public class NewsDetailActivity extends Activity {
 
     private void initialComponents(){
         imgNewsDetailImage = findViewById(R.id.imgNewsDetailImage);
-        txtNewsDetailDescription =findViewById(R.id.txtNewsDetailDescription);
-        txtNewsDetailAuthor =findViewById(R.id.txtNewsDetailAuthor);
-        txtNewsDetailPublishedAt =findViewById(R.id.txtNewsDetailPublishedAt);
-        txtNewsDetailTitle =findViewById(R.id.txtNewsDetailTitle);
+        txtNewsDetailDescription = findViewById(R.id.txtNewsDetailDescription);
+        txtNewsDetailAuthor = findViewById(R.id.txtNewsDetailAuthor);
+        txtNewsDetailPublishedAt = findViewById(R.id.txtNewsDetailPublishedAt);
+        txtNewsDetailTitle = findViewById(R.id.txtNewsDetailTitle);
+        txtTranslatedWords = findViewById(R.id.txtTranslatedWords);
     }
 
     private void setNewsDetail(News detailNews){
@@ -65,6 +79,16 @@ public class NewsDetailActivity extends Activity {
                 .into(imgNewsDetailImage);
 
         findRepatedWord(getListOfWord());
+        String translatedWords = "" ;
+        for (int i = 0; i < translatedWordList.length; i++) {
+
+            System.out.println(translatedWordList[i][0] + "-" + translatedWordList[i][1]);
+
+            txtTranslatedWords.setText(translatedWords);
+        }
+        System.out.println("sadasddasd");
+        System.out.println("translated-words: " + translatedWords);
+
     }
 
     private String[] getListOfWord(){
@@ -91,7 +115,7 @@ public class NewsDetailActivity extends Activity {
         }
 
         String[] sortedWordList = sortWordNumber(counterMap);
-        translatedWordList = translate(sortedWordList);
+        translatedWordList = match(sortedWordList);
 
     }
 
@@ -122,13 +146,36 @@ public class NewsDetailActivity extends Activity {
         return sortedWords;
     }
 
-    private String[][] translate(String[] words){
-        String[][] translatedWords = new String[5][];
+    private String[][] match(String[] words){
+        String[][] translatedWords = new String[5][2];
         for (int i = 0; i < words.length; i++) {
             translatedWords[i][0] = words[i];
-            translatedWords[i][1] = RequestURL.getTranslatinonUrl(words[i]);
+
+            translatedWords[i][1] = translate(RequestURL.getTranslatinonUrl(words[i]));
         }
         return translatedWords;
+    }
+    private String translatedWord;
+    private String translate(String translationUrl){
+
+        RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+        StringRequest request = new StringRequest(Request.Method.GET, translationUrl, new Response.Listener<String>() {
+
+            @Override
+            public void onResponse(String response) {
+                translatedWord = jsonParse.translatedWordParser(response);
+                System.out.println("sonuc:" + translatedWord);
+            }
+        }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+
+        requestQueue.add(request);
+        return translatedWord;
     }
 
     private String dateFormater(String date){
