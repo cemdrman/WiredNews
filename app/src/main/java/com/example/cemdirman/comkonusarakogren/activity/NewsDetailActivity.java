@@ -1,12 +1,10 @@
 package com.example.cemdirman.comkonusarakogren.activity;
 
 import android.content.Intent;
-import android.util.Log;
 import android.widget.TextView;
 import android.app.Activity;
 import android.os.Bundle;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -15,7 +13,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.cemdirman.comkonusarakogren.R;
-import com.example.cemdirman.comkonusarakogren.adapters.ListViewAdapter;
 import com.example.cemdirman.comkonusarakogren.model.News;
 import com.example.cemdirman.comkonusarakogren.utility.JsonParse;
 import com.example.cemdirman.comkonusarakogren.utility.RequestURL;
@@ -40,10 +37,16 @@ public class NewsDetailActivity extends Activity {
     private TextView  txtNewsDetailAuthor;
     private TextView  txtNewsDetailPublishedAt;
     private TextView  txtNewsDetailTitle;
-    private TextView  txtTranslatedWords;
+    private TextView  txtTranslatedWord1;
+    private TextView  txtTranslatedWord2;
+    private TextView  txtTranslatedWord3;
+    private TextView  txtTranslatedWord4;
+    private TextView  txtTranslatedWord5;
     private JsonParse  jsonParse = new JsonParse();
 
-    private String[][] translatedWordList = new String[5][];
+    private String[][] translatedWordList = new String[5][2];
+    private String[] sortedWordList = new String[5];
+    private TextView[] txtList = new TextView[5];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +67,16 @@ public class NewsDetailActivity extends Activity {
         txtNewsDetailAuthor = findViewById(R.id.txtNewsDetailAuthor);
         txtNewsDetailPublishedAt = findViewById(R.id.txtNewsDetailPublishedAt);
         txtNewsDetailTitle = findViewById(R.id.txtNewsDetailTitle);
-        txtTranslatedWords = findViewById(R.id.txtTranslatedWords);
+        txtTranslatedWord1 = findViewById(R.id.txtTranslatedWord1);
+        txtTranslatedWord2 = findViewById(R.id.txtTranslatedWord2);
+        txtTranslatedWord3 = findViewById(R.id.txtTranslatedWord3);
+        txtTranslatedWord4 = findViewById(R.id.txtTranslatedWord4);
+        txtTranslatedWord5 = findViewById(R.id.txtTranslatedWord5);
+        txtList[0] = txtTranslatedWord1;
+        txtList[1] = txtTranslatedWord2;
+        txtList[2] = txtTranslatedWord3;
+        txtList[3] = txtTranslatedWord4;
+        txtList[4] = txtTranslatedWord5;
     }
 
     private void setNewsDetail(News detailNews){
@@ -79,16 +91,6 @@ public class NewsDetailActivity extends Activity {
                 .into(imgNewsDetailImage);
 
         findRepatedWord(getListOfWord());
-        String translatedWords = "" ;
-        for (int i = 0; i < translatedWordList.length; i++) {
-
-            System.out.println(translatedWordList[i][0] + "-" + translatedWordList[i][1]);
-
-            txtTranslatedWords.setText(translatedWords);
-        }
-        System.out.println("sadasddasd");
-        System.out.println("translated-words: " + translatedWords);
-
     }
 
     private String[] getListOfWord(){
@@ -114,8 +116,8 @@ public class NewsDetailActivity extends Activity {
             }
         }
 
-        String[] sortedWordList = sortWordNumber(counterMap);
-        translatedWordList = match(sortedWordList);
+        sortedWordList = sortWordNumber(counterMap);
+        match(sortedWordList);
 
     }
 
@@ -146,36 +148,33 @@ public class NewsDetailActivity extends Activity {
         return sortedWords;
     }
 
-    private String[][] match(String[] words){
-        String[][] translatedWords = new String[5][2];
-        for (int i = 0; i < words.length; i++) {
-            translatedWords[i][0] = words[i];
 
-            translatedWords[i][1] = translate(RequestURL.getTranslatinonUrl(words[i]));
-        }
-        return translatedWords;
-    }
-    private String translatedWord;
-    private String translate(String translationUrl){
+    private void match(String[] sortedWordList){
 
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
-        StringRequest request = new StringRequest(Request.Method.GET, translationUrl, new Response.Listener<String>() {
+        for (int i = 0; i < sortedWordList.length; i++) {
+            translatedWordList[i][0] = sortedWordList[i];
+            final int finalI = i;
+            StringRequest request = new StringRequest(Request.Method.GET, RequestURL.getTranslatinonUrl(sortedWordList[i]), new Response.Listener<String>() {
 
-            @Override
-            public void onResponse(String response) {
-                translatedWord = jsonParse.translatedWordParser(response);
-                System.out.println("sonuc:" + translatedWord);
-            }
-        }, new Response.ErrorListener() {
+                @Override
+                public void onResponse(String response) {
+                    String translatedWord = jsonParse.translatedWordParser(response);
+                    translatedWordList[finalI][1] = translatedWord;
 
-            @Override
-            public void onErrorResponse(VolleyError error) {
+                    txtList[finalI].setText( translatedWordList[finalI][0] + "-" + translatedWordList[finalI][1]);
 
-            }
-        });
+                }
+            }, new Response.ErrorListener() {
 
-        requestQueue.add(request);
-        return translatedWord;
+                @Override
+                public void onErrorResponse(VolleyError error) {
+
+                }
+            });
+
+            requestQueue.add(request);
+        }
     }
 
     private String dateFormater(String date){

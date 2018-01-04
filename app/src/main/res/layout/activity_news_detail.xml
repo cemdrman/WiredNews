@@ -46,17 +46,41 @@
                 style="@style/customTextView"/>
             <TextView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:id="@+id/txtNewsDetailDescription"
+                android:paddingBottom="20dp"
                 android:gravity="top"
                 style="@style/customTextView"/>
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/txtTranslatedWords"
-                android:maxLines="5"
-                android:lines="5"
+                android:gravity="left"
+                android:id="@+id/txtTranslatedWord1"
+                style="@style/customTextView"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:id="@+id/txtTranslatedWord2"
+                style="@style/customTextView"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:id="@+id/txtTranslatedWord3"
+                style="@style/customTextView"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:id="@+id/txtTranslatedWord4"
+                style="@style/customTextView"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:id="@+id/txtTranslatedWord5"
                 style="@style/customTextView"/>
 
         </LinearLayout>
